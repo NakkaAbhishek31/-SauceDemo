@@ -47,14 +47,14 @@ pipeline {
         }
     }
 
-   post {
+post {
     always {
-        allure commandline: 'Allure 2.44.0',
-               includeProperties: false,
-               results: [[path: 'allure-results']]
-
-        archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
-        archiveArtifacts artifacts: 'test-results/**', allowEmptyArchive: true
+        allure([
+            includeProperties: false,
+            jdk: '',
+            commandline: 'Allure',
+            results: [[path: 'allure-results']]
+        ])
     }
 }
 }
