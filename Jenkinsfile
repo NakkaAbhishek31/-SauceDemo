@@ -47,7 +47,7 @@ pipeline {
         }
     }
 
-    ost {
+    post {
         always {
             allure includeProperties: false,
                    jdk: '',
