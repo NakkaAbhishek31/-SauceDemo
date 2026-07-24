@@ -47,8 +47,12 @@ pipeline {
         }
     }
 
-    post {
+    ost {
         always {
+            allure includeProperties: false,
+                   jdk: '',
+                   results: [[path: 'allure-results']]
+
             archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
             archiveArtifacts artifacts: 'test-results/**', allowEmptyArchive: true
         }
