@@ -178,5 +178,89 @@ await expect(inventoryPage.productDetailsPrice).toHaveText('$29.99');
 });
 
 
+test('Customer can add every inventory product to the cart', async ({loginPage, inventoryPage,cartPage }) => {
+
+    await loginPage.Visit();
+    await loginPage.login('standard_user', 'secret_sauce');
+    await expect(inventoryPage.pagetitile).toBeVisible();
+    const productNames=await inventoryPage.productNames.allTextContents();
+   const productslength = String(productNames.length)
+    for(let productName of productNames)
+    {
+        await inventoryPage.addProductToCart(productName);
+    }
+    await inventoryPage.openCart();
+
+    await expect(inventoryPage.cartBadge).toHaveText(productslength);
+
+       for(let productName of productNames)
+    {
+         await expect(cartPage.cartItem(productName)).toBeVisible();
+    }
+});
 
 
+test('Customer can remove every product from the cart', async ({loginPage, inventoryPage,cartPage }) => {
+
+    await loginPage.Visit();
+    await loginPage.login('standard_user', 'secret_sauce');
+    await expect(inventoryPage.pagetitile).toBeVisible();
+    const productNames=await inventoryPage.productNames.allTextContents();
+   const productslength = String(productNames.length)
+    for(let productName of productNames)
+    {
+        await inventoryPage.addProductToCart(productName);
+    }
+    await inventoryPage.openCart();
+    await expect(inventoryPage.cartBadge).toHaveText(productslength);
+    for(let productName of productNames)
+    {
+         await expect(cartPage.cartItem(productName)).toBeVisible();
+          await cartPage.removeProduct(productName);
+    }
+    await expect(cartPage.cartItems).toBeHidden();
+    await expect(cartPage.cartItems).toHaveCount(0);
+          
+});
+
+
+test('Cart items persist after refreshing the Products page ', async ({page,loginPage, inventoryPage,cartPage}) => {
+
+    const firstproduct = 'Sauce Labs Backpack';
+    const secondProduct = 'Sauce Labs Bike Light';
+
+    await loginPage.Visit();
+
+    await loginPage.login('standard_user', 'secret_sauce');
+
+    await expect(inventoryPage.pagetitile).toBeVisible();
+
+    await inventoryPage.addProductToCart(firstproduct);
+
+    await inventoryPage.addProductToCart(secondProduct);
+
+
+    await inventoryPage.verifyProductWasAdded(firstproduct);
+    await inventoryPage.verifyProductWasAdded(secondProduct);
+    await expect(inventoryPage.cartBadge).toHaveText('2');
+  await page.reload();
+  await expect(inventoryPage.pagetitile).toBeVisible();
+
+await expect(inventoryPage.cartBadge).toHaveText('2');
+
+await expect(
+  inventoryPage.productCard(firstproduct)
+    .getByRole('button', { name: 'Remove' })
+).toBeVisible();
+
+await expect(
+  inventoryPage.productCard(secondProduct)
+    .getByRole('button', { name: 'Remove' })
+).toBeVisible();
+
+await inventoryPage.openCart();
+
+await expect(cartPage.cartItem(firstproduct)).toBeVisible();
+await expect(cartPage.cartItem(secondProduct)).toBeVisible();
+
+});

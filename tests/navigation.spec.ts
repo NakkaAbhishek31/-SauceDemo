@@ -147,3 +147,69 @@ test(' Open Backpack details → Open Menu → Click All Items All Items menu re
 
 
 })
+
+
+//bug
+test('Reset App State clears every selected product button', async ({ page,loginPage, inventoryPage,navigation }) => {
+
+    await loginPage.Visit();
+    await loginPage.login('standard_user', 'secret_sauce');
+    await expect(inventoryPage.pagetitile).toBeVisible();
+    let productNames=await inventoryPage.productNames.allTextContents();
+
+    for(let productname of productNames)
+    {
+      await inventoryPage.addProductToCart(productname);
+    }
+
+      await expect(inventoryPage.cartBadge)
+      .toHaveText(String(productNames.length));
+
+    await navigation.clickOnOpenMenu();
+
+    await navigation.clickOnRestAppState();
+
+    await navigation.clickOnCloseMenu();
+
+    await expect(inventoryPage.cartBadge).toBeHidden();
+for (const productName of productNames) {
+      await expect(
+        inventoryPage.productCard(productName)
+          .getByRole('button', { name: 'Add to cart' })
+      ).toBeVisible();
+    }
+
+});
+
+
+
+test('Reset App State clears every selected product button.with reloading page', async ({ page,loginPage, inventoryPage,navigation }) => {
+
+    await loginPage.Visit();
+    await loginPage.login('standard_user', 'secret_sauce');
+    await expect(inventoryPage.pagetitile).toBeVisible();
+    let productNames=await inventoryPage.productNames.allTextContents();
+
+    for(let productname of productNames)
+    {
+      await inventoryPage.addProductToCart(productname);
+    }
+
+      await expect(inventoryPage.cartBadge)
+      .toHaveText(String(productNames.length));
+
+    await navigation.clickOnOpenMenu();
+
+    await navigation.clickOnRestAppState();
+
+    await navigation.clickOnCloseMenu();
+    await page.reload();
+    await expect(inventoryPage.cartBadge).toBeHidden();
+for (const productName of productNames) {
+      await expect(
+        inventoryPage.productCard(productName)
+          .getByRole('button', { name: 'Add to cart' })
+      ).toBeVisible();
+    }
+
+});

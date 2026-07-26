@@ -13,7 +13,11 @@ export class InventoryPage extends BasePage {
   readonly productDetailsPrice:Locator;
   readonly productDetailsDesc:Locator;
    readonly inventoryPriceDetails:Locator;
-   readonly productNames :Locator
+   readonly productNames :Locator;
+   readonly inventoryImages:Locator;
+   readonly productDetailsName: Locator;
+  
+
    
   constructor(page: Page) {
     super(page);
@@ -28,6 +32,10 @@ export class InventoryPage extends BasePage {
     this.productDetailsDesc=page.locator('div.inventory_details_desc.large_size:visible');
     this.inventoryPriceDetails= page.locator('[data-test="inventory-item-price"]');
     this.productNames = this.page.locator('.inventory_item_name');
+    this.inventoryImages=page.locator('.inventory_item_img img');
+    this.productDetailsName = page.locator('[data-test="inventory-item-name"]');
+    
+
    
   }
 
@@ -50,6 +58,11 @@ export class InventoryPage extends BasePage {
     await expect(product.getByRole('button', { name: 'Remove' })).toBeVisible();
   }
 
+
+    async removeTheProductFromCart(productName: string): Promise<void> {
+    const product =  this.productCard(productName);
+    await product.getByRole('button', { name: 'Remove' }).click();
+  }
 
   async openCart(): Promise<void> {
     await this.cartLink.click();
@@ -100,6 +113,12 @@ async removeProductFromCartFromDetails():Promise<void>
   await this.removeProductFromDetailsPage.click()
 }
 
+productPrice(productName: string): Locator {
+  return this.productCard(productName).locator('.inventory_item_price');
+}
 
+productDescription(productName: string): Locator {
+  return this.productCard(productName).locator('.inventory_item_desc');
+}
 
 }

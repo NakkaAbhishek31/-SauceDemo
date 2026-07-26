@@ -343,3 +343,126 @@ console.log("displayedItemTotal:",calculatedTotal)
 expect(calculatedTotal).toBeCloseTo(displayedItemTotal, 2);
 
 })
+
+
+test('Checkout keeps valid customer details after Postal Code validation error', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
+
+    const firstproduct = 'Sauce Labs Backpack';
+    const secondProduct = 'Sauce Labs Bike Light';
+    await loginPage.Visit();
+    await loginPage.login('standard_user', 'secret_sauce');
+    await expect(inventoryPage.pagetitile).toBeVisible();
+    await inventoryPage.addProductToCart(firstproduct);
+    await inventoryPage.addProductToCart(secondProduct);
+    await inventoryPage.verifyProductWasAdded(firstproduct);
+    await inventoryPage.verifyProductWasAdded(secondProduct);
+    await expect(inventoryPage.cartBadge).toHaveText('2');
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+    await checkout.checkoutCustomerDetailsFilling('test', 'test', '');
+    await expect(checkout.firstName).toHaveValue('test');
+    await expect(checkout.lastName).toHaveValue('test');
+    await expect(checkout.postalCode).toHaveValue('');
+    await checkout.clickOncheckoutContinue();
+    await expect(checkout.errorMsg).toContainText('Error: Postal Code is required');
+
+});
+
+
+
+test('Checkout Overview displays every selected product and correct subtotal',
+  async ({ page, loginPage, inventoryPage ,cartPage,checkout}) => {
+    await loginPage.Visit();
+    await loginPage.login('standard_user', 'secret_sauce');
+    await expect(inventoryPage.pagetitile).toBeVisible();
+    const productNames = await inventoryPage.productNames.allTextContents();
+    for(const productName of productNames )
+    {
+       await inventoryPage.addProductToCart(productName);
+      
+    }
+
+    await inventoryPage.openCart();
+        for(const productName of productNames )
+    {
+       await expect(cartPage.cartItem(productName)).toBeVisible();
+      
+    }
+
+    await cartPage.clickOnCheckOut();
+    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53307');
+    const chyeckoutInventoryProductNames = await checkout.checkoutInventoryItemName.allTextContents();
+
+    for(const chyeckoutInventoryProductName of chyeckoutInventoryProductNames )
+    {
+       await expect(cartPage.cartItem(chyeckoutInventoryProductName)).toBeVisible();
+      
+    }
+    await checkout.clickOncheckoutContinue()
+    const priceTexts =
+    await checkout.inventoryCheckoutProductPrice.allTextContents();
+
+   const numericPrices = priceTexts.map(price =>
+    parseFloat(price.replace(/[^0-9.]/g, ''))
+);
+
+const calculatedTotal = numericPrices.reduce(
+  (sum, price) => sum + price,
+  0
+);
+
+
+const subtotalText = await checkout.subTotal.innerText();
+
+const displayedItemTotal = parseFloat(
+  subtotalText.replace(/[^0-9.]/g, '')
+);
+
+expect(calculatedTotal).toBeCloseTo(displayedItemTotal, 2);
+
+
+  });
+
+
+  test('Checkout total equals Item Total plus Tax', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
+
+    const firstproduct = 'Sauce Labs Backpack';
+    const secondProduct = 'Sauce Labs Bike Light';
+
+    await loginPage.Visit();
+
+    await loginPage.login('standard_user', 'secret_sauce');
+
+    await expect(inventoryPage.pagetitile).toBeVisible();
+
+    await inventoryPage.addProductToCart(firstproduct);
+
+    await inventoryPage.addProductToCart(secondProduct);
+
+    await inventoryPage.openCart();
+
+    await expect(inventoryPage.cartBadge).toHaveText('2');
+
+     await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53307');
+
+    await checkout.clickOncheckoutContinue();
+
+   
+const subTotal = parseFloat((await checkout.subTotal.textContent())!.replace(/[^0-9.]/g, ''));
+const tax = parseFloat((await checkout.tax.textContent())!.replace(/[^0-9.]/g, ''));
+
+const expectedTotal = subTotal + tax;
+
+
+const totalText = await checkout.checkoutTotal.innerText();
+
+const displayedItemTotal = parseFloat(
+  totalText.replace(/[^0-9.]/g, '')
+);
+
+
+expect(expectedTotal).toBeCloseTo(displayedItemTotal, 2);
+
+})

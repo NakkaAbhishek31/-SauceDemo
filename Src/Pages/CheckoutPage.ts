@@ -20,6 +20,7 @@ export class CheckoutPage extends BasePage {
 readonly paymentInfo :Locator;
 readonly shippingInfo :Locator;
  readonly inventoryCheckoutProductPrice:Locator;
+ readonly checkoutInventoryItemName:Locator
     constructor(page: Page) {
         super(page)
 
@@ -46,7 +47,8 @@ readonly shippingInfo :Locator;
   { exact: true }
 );
 
-this.inventoryCheckoutProductPrice=page.locator('.inventory_item_price')
+this.inventoryCheckoutProductPrice=page.locator('.inventory_item_price');
+  this.checkoutInventoryItemName=page.locator('[data-test="inventory-item-name"]');
     }
 
     async checkoutCustomerDetailsFilling(firstName: string, lastName: string, postalCode: string): Promise<void> {
@@ -81,5 +83,10 @@ this.inventoryCheckoutProductPrice=page.locator('.inventory_item_price')
   {
          await this.btnBackHome.click()
   }
+
+
+checkoutItemPrice(productName: string): Locator {
+  return this.checkoutSummary(productName).locator('.inventory_item_price');
+}
 
 }

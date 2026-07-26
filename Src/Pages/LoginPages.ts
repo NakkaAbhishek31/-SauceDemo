@@ -6,12 +6,14 @@ export class LoginPage extends BasePage{
     readonly passwordInput:Locator;
     readonly loginButton:Locator;
     readonly errorMessage:Locator;
+    readonly BtnerrorMessageCancel:Locator
     constructor(page:Page){
      super(page);
-     this.usernameInput=page.getByPlaceholder('Username')
+     this.usernameInput=page.getByPlaceholder('Username');
      this.passwordInput=page.getByPlaceholder('Password');
-     this.loginButton= page.locator('#login-button')
-     this.errorMessage=page.locator("h3[data-test='error']")
+     this.loginButton= page.locator('#login-button');
+     this.errorMessage=page.locator("h3[data-test='error']");
+     this.BtnerrorMessageCancel=page.locator("//button[@class='error-button']//*[name()='svg']")
     }
 
 async Visit():Promise<void>
@@ -25,7 +27,14 @@ async login(Username:string,Password:string):Promise<void>
     await this.usernameInput.fill(Username);
     await this.passwordInput.fill(Password);
     await this.loginButton.click();
-}
+};
+
+async errorMessageClose():Promise<void>
+{
+ 
+    await this.BtnerrorMessageCancel.click();
+};
+
 
 
 
