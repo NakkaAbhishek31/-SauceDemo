@@ -1,0 +1,32 @@
+{
+  "TC_LOGIN_001": {
+    "username": "locked_out_user",
+    "password": "secret_sauce",
+    "expectedError": "locked out"
+  },
+
+  "TC_LOGIN_002": {
+    "emptyCredentials": {
+      "username": "",
+      "password": "",
+      "expectedError": "Username is required"
+    },
+    "emptyPassword": {
+      "username": "standard_user",
+      "password": "",
+      "expectedError": "Password is required"
+    }
+  },
+
+  "TC_LOGIN_003": {
+    "username": "standard_user",
+    "password": "secret_saucee",
+    "expectedError": "Epic sadface: Username and password do not match any user in this service"
+  },
+
+  "TC_LOGIN_004": {
+    "username": "standard_user",
+    "password": "secret_saucee",
+    "expectedError": "Epic sadface: Username and password do not match any user in this service"
+  }
+}

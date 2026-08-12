@@ -1,42 +1,71 @@
-import { LoginPage } from "../Src/Pages/LoginPages";
-import { InventoryPage } from "../Src/Pages/InventoryPages";
-import { CartPage } from "../Src/Pages/cartPage";
-import { CheckoutPage } from "../Src/Pages/CheckoutPage";
-import { NavigationPage } from "../Src/Pages/NavigationPage.ts";
-import { test, expect } from "./fixtures.ts";
+import { test, expect } from "./fixtures";
 
-test("locked user sees a login error", async ({ loginPage }) => {
+import loginData from "../test-data/login.data.json";
+
+test("TC_LOGIN_001 - Locked user should see a login error @negative @login @regression", async ({
+  loginPage,
+}) => {
+  const data = loginData.TC_LOGIN_001;
+
   await loginPage.Visit();
-  await loginPage.login("locked_out_user", "secret_sauce");
-  await expect(loginPage.errorMessage).toContainText("locked out");
+
+  await loginPage.login(data.username, data.password);
+
+  await expect(loginPage.errorMessage).toContainText(data.expectedError);
 });
 
-test(" username and password requried ", async ({ loginPage }) => {
-  await loginPage.Visit();
-  await loginPage.login("", "");
-  await expect(loginPage.errorMessage).toContainText("Username is required");
-  await loginPage.login("standard_user", "");
-  await expect(loginPage.errorMessage).toContainText("Password is required");
-  // await expect(loginPage.errorMessage).toContainText('Epic sadface: Password is required')
-});
+test("TC_LOGIN_002 - Username and password required validations should appear @negative @validation @regression", async ({
+  loginPage,
+}) => {
+  const data = loginData.TC_LOGIN_002;
 
-test(" User can close the login error message ", async ({ loginPage }) => {
   await loginPage.Visit();
-  await loginPage.login("standard_user", "secret_saucee");
-  await expect(loginPage.errorMessage).toContainText(
-    "Epic sadface: Username and password do not match any user in this service",
+
+  // Empty username and password.
+  await loginPage.login(
+    data.emptyCredentials.username,
+    data.emptyCredentials.password,
   );
-  await loginPage.errorMessageClose();
-  await expect(loginPage.errorMessage).toBeHidden();
-  // await loginPage.login('standard_user', '');
-  // await expect(loginPage.errorMessage).toContainText('Password is required');
-  // await expect(loginPage.errorMessage).toContainText('Epic sadface: Password is required')
+
+  await expect(loginPage.errorMessage).toContainText(
+    data.emptyCredentials.expectedError,
+  );
+
+  // Valid username with empty password.
+  await loginPage.login(
+    data.emptyPassword.username,
+    data.emptyPassword.password,
+  );
+
+  await expect(loginPage.errorMessage).toContainText(
+    data.emptyPassword.expectedError,
+  );
 });
 
+test("TC_LOGIN_003 - User should close the login error message @negative @ui @regression", async ({
+  loginPage,
+}) => {
+  const data = loginData.TC_LOGIN_003;
 
-test(" Valid username with invalid password shows login error ", async ({ loginPage }) => {
   await loginPage.Visit();
-  await loginPage.login("standard_user", "secret_saucee");
 
-  await expect(loginPage.errorMessage).toContainText("Epic sadface: Username and password do not match any user in this service");
+  await loginPage.login(data.username, data.password);
+
+  await expect(loginPage.errorMessage).toContainText(data.expectedError);
+
+  await loginPage.errorMessageClose();
+
+  await expect(loginPage.errorMessage).toBeHidden();
+});
+
+test("TC_LOGIN_004 - Valid username with invalid password should show login error @negative @login @regression", async ({
+  loginPage,
+}) => {
+  const data = loginData.TC_LOGIN_004;
+
+  await loginPage.Visit();
+
+  await loginPage.login(data.username, data.password);
+
+  await expect(loginPage.errorMessage).toContainText(data.expectedError);
 });

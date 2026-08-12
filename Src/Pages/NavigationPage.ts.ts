@@ -9,6 +9,8 @@ export class NavigationPage extends BasePage {
     readonly menuOptions:Locator
     readonly btnclose:Locator;
     readonly btnAbout:Locator;
+    readonly btnAllItems:Locator;
+    
 
     constructor(page:Page){
         super(page);
@@ -18,6 +20,13 @@ export class NavigationPage extends BasePage {
         this.menuOptions=page.locator('a.bm-item.menu-item');
         this.btnclose=page.getByText('Close Menu', { exact: true });
         this.btnAbout=page.getByRole('link', { name: /About/i });
+        this.btnAllItems = page.getByRole(
+  'link',
+  {
+    name: 'All Items',
+    exact: true,
+  }
+);
     }
 
     async clickOnOpenMenu():Promise<void>
@@ -32,6 +41,10 @@ export class NavigationPage extends BasePage {
         await this.btnAbout.click();   
 
     }
+
+    async clickOnAllItems(): Promise<void> {
+  await this.btnAllItems.click();
+}
 
 
      async clickOnLogout():Promise<void>

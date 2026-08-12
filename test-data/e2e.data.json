@@ -1,0 +1,16 @@
+{
+
+   "login": {
+    "username": "standard_user",
+    "password": "secret_sauce"
+  },
+  "TC_CHECKOUT_014": {
+    "product": "Sauce Labs Backpack",
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "53307",
+    "expectedCartCount": "1",
+    "successMessage": "Thank you for your order!",
+    "inventoryUrl": "inventory.html"
+  }
+}

@@ -1,0 +1,183 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Inventory.spec.ts >> Selected sorting option is retained after returning from product details
+- Location: tests\Inventory.spec.ts:457:5
+
+# Error details
+
+```
+Error: expect(locator).toHaveValue(expected) failed
+
+Locator:  locator('[data-test="product-sort-container"]')
+Expected: "lohi"
+Received: "az"
+Timeout:  5000ms
+
+Call log:
+  - Expect "toHaveValue" with timeout 5000ms
+  - waiting for locator('[data-test="product-sort-container"]')
+    14 × locator resolved to <select class="product_sort_container" data-test="product-sort-container">…</select>
+       - unexpected value "az"
+
+```
+
+```yaml
+- combobox:
+  - option "Name (A to Z)" [selected]
+  - option "Name (Z to A)"
+  - option "Price (low to high)"
+  - option "Price (high to low)"
+```
+
+# Test source
+
+```ts
+  383 | 
+  384 |     await expect(inventoryPage.pagetitile).toBeVisible();
+  385 | 
+  386 |     await expect(inventoryPage.inventoryImages).toHaveCount(6);
+  387 | 
+  388 |     const productNames = await inventoryPage.productNames.allTextContents();
+  389 | 
+  390 |     for (const [index, productName] of productNames.entries()) {
+  391 |       const productImage = inventoryPage.inventoryImages.nth(index);
+  392 | 
+  393 |       await expect(productImage).toBeVisible();
+  394 |       await expect(productImage).toHaveAttribute('alt', productName);
+  395 |     }
+  396 |   }
+  397 | );
+  398 | 
+  399 | 
+  400 | test('Verify every product opens its correct product-details page',
+  401 |   async ({ page, loginPage, inventoryPage }) => {
+  402 |     await loginPage.Visit();
+  403 |     await loginPage.login('standard_user', 'secret_sauce');
+  404 |     await expect(inventoryPage.pagetitile).toBeVisible();
+  405 |     const productNames = await inventoryPage.productNames.allTextContents();
+  406 |     for(const productName of productNames )
+  407 |     {
+  408 |        await inventoryPage.OpenProductDetails(productName);
+  409 |        await expect(inventoryPage.productDetailsName).toHaveText(productName);
+  410 |        await inventoryPage.backToProducts();
+  411 |        await expect(inventoryPage.pagetitile).toBeVisible();
+  412 |     }
+  413 | 
+  414 | 
+  415 |   });
+  416 | 
+  417 | 
+  418 |   test('Adding one product changes only that product button to Remove ', async ({page, loginPage, inventoryPage, }) => {
+  419 | 
+  420 |     const firstproduct = 'Sauce Labs Backpack';
+  421 |     const secondProduct = 'Sauce Labs Bike Light';
+  422 |     await loginPage.Visit();
+  423 |     await loginPage.login('standard_user', 'secret_sauce');
+  424 |     await expect(inventoryPage.pagetitile).toBeVisible();
+  425 |     await inventoryPage.addProductToCart(firstproduct);
+  426 |     await expect(inventoryPage.productCard(firstproduct).getByRole('button', { name: 'Remove' })).toBeVisible();
+  427 |     await expect(inventoryPage.productCard(secondProduct).getByRole('button', { name: 'Add to cart' })).toBeVisible();
+  428 |     await expect(inventoryPage.cartBadge).toHaveText('1');
+  429 | 
+  430 | })
+  431 | 
+  432 | 
+  433 | test('Product description remains the same from Products page to Details page', async ({ page,loginPage, inventoryPage}) => {
+  434 | 
+  435 |     const firstproduct = 'Sauce Labs Backpack';
+  436 | 
+  437 | 
+  438 |     await loginPage.Visit();
+  439 | 
+  440 |     await loginPage.login('standard_user', 'secret_sauce');
+  441 | 
+  442 |     await expect(inventoryPage.pagetitile).toBeVisible();
+  443 | 
+  444 |      const inventoryDescription =
+  445 |       await inventoryPage.productDescription(firstproduct).innerText();
+  446 | 
+  447 |     await inventoryPage.OpenProductDetails(firstproduct);
+  448 | 
+  449 |     await expect(inventoryPage.productDetailsDesc).toHaveText(inventoryDescription);
+  450 |   
+  451 | 
+  452 | 
+  453 | })
+  454 | 
+  455 | 
+  456 | //bug
+  457 | test('Selected sorting option is retained after returning from product details', async ({ page,loginPage, inventoryPage,}) => {
+  458 | 
+  459 | 
+  460 |     const firstproduct = 'Sauce Labs Onesie';
+  461 | 
+  462 |     await loginPage.Visit();
+  463 | 
+  464 |     await loginPage.login('standard_user', 'secret_sauce');
+  465 | 
+  466 |     await expect(inventoryPage.pagetitile).toBeVisible();
+  467 | 
+  468 |     //await inventoryPage.clickonFilterOption();
+  469 | 
+  470 |     await inventoryPage.selectOption('lohi');;
+  471 | 
+  472 | 
+  473 |     await expect(inventoryPage.allInventoryProducts.first()).toContainText(firstproduct);
+  474 | 
+  475 |     await inventoryPage.OpenProductDetails(firstproduct);
+  476 | 
+  477 | await expect(page.getByText(firstproduct, { exact: true })).toBeVisible();
+  478 | 
+  479 | await inventoryPage.backToProducts();
+  480 | 
+  481 | await expect(inventoryPage.pagetitile).toBeVisible();
+  482 | 
+> 483 | await expect(inventoryPage.filtterBtn).toHaveValue('lohi');
+      |                                        ^ Error: expect(locator).toHaveValue(expected) failed
+  484 | 
+  485 | await expect(inventoryPage.productNames.first())
+  486 |   .toHaveText('Sauce Labs Onesie');
+  487 | })
+  488 | 
+  489 | 
+  490 | test('Cart combines products added from Products page and Details page', async ({ page,loginPage, inventoryPage }) => {
+  491 | 
+  492 |     const firstproduct = 'Sauce Labs Backpack';
+  493 |     const  secondProduct = 'Sauce Labs Bike Light';
+  494 |     await loginPage.Visit();
+  495 |     await loginPage.login('standard_user', 'secret_sauce');
+  496 |     await inventoryPage.addProductToCart(secondProduct);
+  497 |     await expect(inventoryPage.pagetitile).toBeVisible();
+  498 |     await inventoryPage.OpenProductDetails(firstproduct);
+  499 |     await expect(page.getByText(firstproduct, { exact: true })).toBeVisible();
+  500 |     await inventoryPage.AddToCartFromDetailsPage();
+  501 |     await expect(inventoryPage.cartBadge).toHaveText('2');
+  502 |     await inventoryPage.backToProducts();
+  503 |     await expect(inventoryPage.pagetitile).toBeVisible();
+  504 | })
+  505 | 
+  506 | test('Product added from Details page shows Remove button on Products page', async ({ loginPage, inventoryPage,page }) => {
+  507 | 
+  508 |     const firstproduct = 'Sauce Labs Backpack';
+  509 |     await loginPage.Visit();
+  510 |     await loginPage.login('standard_user', 'secret_sauce');
+  511 |     await expect(inventoryPage.pagetitile).toBeVisible();
+  512 |     await inventoryPage.OpenProductDetails(firstproduct);
+  513 |     await inventoryPage.AddToCartFromDetailsPage();
+  514 |     await expect(inventoryPage.cartBadge).toHaveText('1');
+  515 |     await inventoryPage.backToProducts();
+  516 |     await expect(inventoryPage.pagetitile).toBeVisible();
+  517 |    await expect(page.getByText(firstproduct, { exact: true })).toBeVisible();
+  518 |    await expect(
+  519 |   inventoryPage.productCard(firstproduct)
+  520 |     .getByRole('button', { name: 'Remove' })
+  521 | ).toBeVisible();
+  522 | 
+  523 | })
+```

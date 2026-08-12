@@ -1,0 +1,109 @@
+{
+  "login": {
+    "username": "standard_user",
+    "password": "secret_sauce"
+  },
+
+  "TC_CHECKOUT_001": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "53307",
+    "expectedCartCount": "2",
+    "successMessage": "Thank you for your order!"
+  },
+
+  "TC_CHECKOUT_002": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "firstName": "",
+    "lastName": "User",
+    "postalCode": "53307",
+    "expectedError": "Error: First Name is required"
+  },
+
+  "TC_CHECKOUT_003": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "firstName": "Test",
+    "lastName": "",
+    "postalCode": "53307",
+    "expectedError": "Error: Last Name is required"
+  },
+
+  "TC_CHECKOUT_004": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "",
+    "expectedError": "Error: Postal Code is required"
+  },
+
+  "TC_CHECKOUT_005": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "expectedCartCount": "2",
+    "cartUrl": "cart.html"
+  },
+
+  "TC_CHECKOUT_006": {
+    "products": ["Sauce Labs Backpack"],
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "53306"
+  },
+
+  "TC_CHECKOUT_007": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "53306",
+    "prices": {
+      "Sauce Labs Backpack": "$29.99",
+      "Sauce Labs Bike Light": "$9.99"
+    },
+    "subtotal": "Item total: $39.98",
+    "tax": "Tax: $3.20",
+    "total": "Total: $43.18"
+  },
+
+  "TC_CHECKOUT_008": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "53307",
+    "successMessage": "Thank you for your order!",
+    "inventoryUrl": "inventory.html"
+  },
+
+  "TC_CHECKOUT_009": {
+    "products": ["Sauce Labs Backpack"],
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "53306"
+  },
+
+  "TC_CHECKOUT_010": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "53307"
+  },
+
+  "TC_CHECKOUT_011": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": ""
+  },
+
+  "TC_CHECKOUT_012": {
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "53307"
+  },
+
+  "TC_CHECKOUT_013": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "firstName": "Test",
+    "lastName": "User",
+    "postalCode": "53307"
+  }
+}

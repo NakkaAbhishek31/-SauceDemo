@@ -1,0 +1,2 @@
+calculatedTotal: 39.98
+displayedItemTotal: 39.98

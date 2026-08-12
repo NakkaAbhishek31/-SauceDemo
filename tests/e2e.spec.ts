@@ -1,29 +1,81 @@
-import { LoginPage } from "../Src/Pages/LoginPages";
 import {
-    test,
-    expect,
-} from './fixtures.ts'
+  test,
+  expect,
+} from './fixtures';
 
-test('Selected product price remains the same on Products, Cart, and Checkout Overview pages', async ({ page, loginPage, inventoryPage, cartPage, checkout }) => {
+import e2e from '../test-data/e2e.data.json';
 
-    const firstproduct = 'Sauce Labs Backpack';
-    await loginPage.Visit();
-    await loginPage.login('standard_user', 'secret_sauce');
-    await expect(inventoryPage.pagetitile).toBeVisible();
-    await inventoryPage.addProductToCart(firstproduct);
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    const inventoryProductPriceText = await inventoryPage.productPrice(firstproduct).innerText();
-    await expect(inventoryPage.cartBadge).toHaveText('1');
-    await inventoryPage.openCart();
-    await expect(cartPage.cartItemPrice(firstproduct)).toContainText(inventoryProductPriceText);
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53307');
-    await checkout.clickOncheckoutContinue();
-    await expect(checkout.checkoutItemPrice(firstproduct)).toContainText(inventoryProductPriceText);
-    await checkout.clickoncheckoutfinish()
-    await expect(checkout.orderCompltedMsg).toContainText('Thank you for your order!');
-    await expect(inventoryPage.cartBadge).toBeHidden();
-    await checkout.ReturnToHome();
-    await expect(inventoryPage.pagetitile).toBeVisible();
-    await expect(page).toHaveURL(/inventory.html/);
-})
+test.describe('SauceDemo E2E Tests', () => {
+  test.beforeEach(
+    async ({
+      loginPage,
+      inventoryPage,
+    }) => {
+      await loginPage.Visit();
+
+      await loginPage.login(
+        e2e.login.username,
+        e2e.login.password
+      );
+
+      await expect(
+        inventoryPage.pagetitile
+      ).toBeVisible();
+    }
+  );
+
+test("TC_CHECKOUT_014 - Product price should remain consistent across Products, Cart, and Checkout Overview @positive @price @regression", async ({
+  page,
+  inventoryPage,
+  cartPage,
+  checkout,
+}) => {
+  const data = e2e.TC_CHECKOUT_014;
+
+  // Capture the price on the Products page.
+  const inventoryPrice = (
+    await inventoryPage.productPrice(data.product).innerText()
+  ).trim();
+
+  await inventoryPage.addProductToCart(data.product);
+
+  await inventoryPage.verifyProductWasAdded(data.product);
+
+  await expect(inventoryPage.cartBadge).toHaveText(data.expectedCartCount);
+
+  // Verify the price on the Cart page.
+  await inventoryPage.openCart();
+
+  await expect(cartPage.cartItemPrice(data.product)).toHaveText(inventoryPrice);
+
+  // Continue to Checkout Overview.
+  await cartPage.clickOnCheckOut();
+
+  await checkout.checkoutCustomerDetailsFilling(
+    data.firstName,
+    data.lastName,
+    data.postalCode,
+  );
+
+  await checkout.clickOncheckoutContinue();
+
+  // Verify the price on Checkout Overview.
+  await expect(checkout.checkoutItemPrice(data.product)).toHaveText(
+    inventoryPrice,
+  );
+
+  // Complete the order.
+  await checkout.clickoncheckoutfinish();
+
+  await expect(checkout.orderCompltedMsg).toContainText(data.successMessage);
+
+  await expect(inventoryPage.cartBadge).toBeHidden();
+
+  await checkout.ReturnToHome();
+
+  await expect(page).toHaveURL(new RegExp(data.inventoryUrl));
+
+  await expect(inventoryPage.pagetitile).toBeVisible();
+});});
+
+

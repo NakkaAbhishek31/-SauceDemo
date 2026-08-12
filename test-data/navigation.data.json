@@ -1,0 +1,53 @@
+{
+  "login": {
+    "username": "standard_user",
+    "password": "secret_sauce"
+  },
+
+  "TC_NAV_001": {
+    "loginUrl": "https://www.saucedemo.com/"
+  },
+
+  "TC_NAV_002": {
+    "product": "Sauce Labs Backpack",
+    "expectedCartCount": "1",
+    "addButtonName": "Add to cart"
+  },
+
+  "TC_NAV_003": {
+    "protectedUrl": "/inventory.html",
+    "loginUrl": "https://www.saucedemo.com/"
+  },
+
+  "TC_NAV_004": {
+    "expectedMenuOptions": [
+      "All Items",
+      "About",
+      "Logout",
+      "Reset App State"
+    ]
+  },
+
+  "TC_NAV_005": {
+    "aboutUrl": "https://saucelabs.com/"
+  },
+
+  "TC_NAV_006": {
+    "product": "Sauce Labs Onesie",
+    "inventoryUrl": "inventory.html",
+    "expectedMenuOptions": [
+      "All Items",
+      "About",
+      "Logout",
+      "Reset App State"
+    ]
+  },
+
+  "TC_NAV_007": {
+    "addButtonName": "Add to cart"
+  },
+
+  "TC_NAV_008": {
+    "addButtonName": "Add to cart"
+  }
+}

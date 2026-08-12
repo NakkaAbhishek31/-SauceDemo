@@ -1,0 +1,68 @@
+{
+  "TC_CART_001": {
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "product": "Sauce Labs Backpack",
+    "expectedCartCount": "1"
+  },
+
+  "TC_CART_002": {
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "firstProduct": "Sauce Labs Backpack",
+    "secondProduct": "Sauce Labs Bike Light",
+    "initialCartCount": "2",
+    "finalCartCount": "1"
+  },
+
+  "TC_CART_003": {
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "firstProduct": "Sauce Labs Backpack",
+    "secondProduct": "Sauce Labs Bike Light",
+    "expectedCartCount": "2",
+    "inventoryUrl": "inventory.html"
+  },
+
+  "TC_CART_004": {
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "product": "Sauce Labs Backpack",
+    "expectedPrice": "$29.99",
+    "expectedCartCount": "1"
+  },
+
+  "TC_CART_005": {
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "product": "Sauce Labs Backpack",
+    "addButtonName": "Add to cart"
+  },
+
+  "TC_CART_006": {
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "product": "Sauce Labs Backpack",
+    "expectedPrice": "$29.99",
+    "detailsUrl": "inventory-item.html"
+  },
+
+  "TC_CART_007": {
+    "username": "standard_user",
+    "password": "secret_sauce"
+  },
+
+  "TC_CART_008": {
+    "username": "standard_user",
+    "password": "secret_sauce"
+  },
+
+  "TC_CART_009": {
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "firstProduct": "Sauce Labs Backpack",
+    "secondProduct": "Sauce Labs Bike Light",
+    "expectedCartCount": "2",
+    "removeButtonName": "Remove"
+  }
+}

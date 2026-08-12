@@ -1,0 +1,96 @@
+{
+  "login": {
+    "username": "standard_user",
+    "password": "secret_sauce"
+  },
+  "TC_INVENTORY_001": {
+    "product": "Sauce Labs Backpack",
+    "cartCount": "1"
+  },
+  "TC_INVENTORY_002": {
+    "products": ["Sauce Labs Backpack", "Sauce Labs Bike Light"],
+    "cartCount": "2"
+  },
+  "TC_INVENTORY_003": {
+    "product": "Sauce Labs Backpack"
+  },
+  "TC_INVENTORY_004": {
+    "sortOption": "lohi",
+    "firstProduct": "Sauce Labs Onesie"
+  },
+  "TC_INVENTORY_005": {
+    "sortOption": "hilo",
+    "firstProduct": "Sauce Labs Fleece Jacket"
+  },
+  "TC_INVENTORY_006": {
+    "sortOption": "az",
+    "firstProduct": "Sauce Labs Backpack"
+  },
+  "TC_INVENTORY_007": {
+    "sortOption": "za",
+    "firstProduct": "Test.allTheThings() T-Shirt (Red)"
+  },
+  "TC_INVENTORY_008": {
+    "product": "Sauce Labs Backpack",
+    "detailsUrl": "inventory-item.html"
+  },
+  "TC_INVENTORY_009": {
+    "product": "Sauce Labs Backpack",
+    "cartCount": "1"
+  },
+  "TC_INVENTORY_010": {
+    "product": "Sauce Labs Backpack",
+    "cartCount": "1"
+  },
+  "TC_INVENTORY_011": {
+    "expectedProductCount": 6,
+    "addButton": "Add to cart"
+  },
+  "TC_INVENTORY_012": {
+    "product": "Sauce Labs Backpack",
+    "price": "$29.99",
+    "description": "carry.allTheThings()"
+  },
+  "TC_INVENTORY_013": {
+    "product": "Sauce Labs Onesie",
+    "sortOption": "lohi",
+    "cartCount": "1"
+  },
+  "TC_INVENTORY_014": {
+    "product": "Sauce Labs Onesie",
+    "defaultSort": "az",
+    "changedSort": "lohi",
+    "cartCount": "1"
+  },
+  "TC_INVENTORY_015": {
+    "sortOption": "lohi"
+  },
+  "TC_INVENTORY_016": {
+    "sortOption": "az"
+  },
+  "TC_INVENTORY_017": {
+    "expectedProductCount": 6
+  },
+  "TC_INVENTORY_018": {},
+  "TC_INVENTORY_019": {
+    "selectedProduct": "Sauce Labs Backpack",
+    "unselectedProduct": "Sauce Labs Bike Light",
+    "cartCount": "1"
+  },
+  "TC_INVENTORY_020": {
+    "product": "Sauce Labs Backpack"
+  },
+  "TC_INVENTORY_021": {
+    "product": "Sauce Labs Onesie",
+    "sortOption": "lohi"
+  },
+  "TC_INVENTORY_022": {
+    "detailsProduct": "Sauce Labs Backpack",
+    "productsPageProduct": "Sauce Labs Bike Light",
+    "cartCount": "2"
+  },
+  "TC_INVENTORY_023": {
+    "product": "Sauce Labs Backpack",
+    "cartCount": "1"
+  }
+}

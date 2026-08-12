@@ -1,468 +1,409 @@
+import { test, expect } from "./fixtures";
 
-import { LoginPage } from '../Src/Pages/LoginPages';
-import { InventoryPage } from '../Src/Pages/InventoryPages';
-import { CartPage } from '../Src/Pages/cartPage';
-import { CheckoutPage } from '../Src/Pages/CheckoutPage';
-import { NavigationPage } from '../Src/Pages/NavigationPage.ts';
-import {
-  test,
-  expect,
-} from './fixtures.ts'
+import checkoutData from "../test-data/checkout.data.json";
 
-test('filling the checkout customer details . and ordering produt  ', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
-
+test.describe("Checkout Tests", () => {
+  test.beforeEach(async ({ loginPage, inventoryPage }) => {
     await loginPage.Visit();
 
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.login(
+      checkoutData.login.username,
+      checkoutData.login.password,
+    );
 
     await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-    await inventoryPage.addProductToCart(secondProduct);
-
-
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await inventoryPage.verifyProductWasAdded(secondProduct);
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-    await inventoryPage.openCart();
-
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53307');
-    await checkout.clickOncheckoutContinue();
-    await checkout.clickoncheckoutfinish()
-
-    await expect(checkout.orderCompltedMsg).toContainText('Thank you for your order!');
-})
-
-
-test('First Name is required during checkout.', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
-
-    await loginPage.Visit();
-
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-    await inventoryPage.addProductToCart(secondProduct);
-
-
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await inventoryPage.verifyProductWasAdded(secondProduct);
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-    await inventoryPage.openCart();
-
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('', 'test', '53307');
-    await checkout.clickOncheckoutContinue();
-    await expect(checkout.errorMsg).toContainText('Error: First Name is required');
-
-})
-
-
-test('Last Name is required during checkout.', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
-
-    await loginPage.Visit();
-
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-    await inventoryPage.addProductToCart(secondProduct);
-
-
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await inventoryPage.verifyProductWasAdded(secondProduct);
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-    await inventoryPage.openCart();
-
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', '', '53307');
-    await checkout.clickOncheckoutContinue();
-    await expect(checkout.errorMsg).toContainText('Error: Last Name is required');
-
-})
-
-test('Postalcode is required during checkout.', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
-
-    await loginPage.Visit();
-
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-    await inventoryPage.addProductToCart(secondProduct);
-
-
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await inventoryPage.verifyProductWasAdded(secondProduct);
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-    await inventoryPage.openCart();
-
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '');
-    await checkout.clickOncheckoutContinue();
-    await expect(checkout.errorMsg).toContainText('Error: Postal Code is required');
-
-})
-
-
-test('customer cancels checkout and returns to the Cart page.', async ({ page ,loginPage, inventoryPage,cartPage,checkout}) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
-
-    await loginPage.Visit();
-
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-    await inventoryPage.addProductToCart(secondProduct);
-
-
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await inventoryPage.verifyProductWasAdded(secondProduct);
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-    await inventoryPage.openCart();
-
-    await cartPage.clickOnCheckOut();
-    await checkout.clickOnCheckoutCancel();
-    await expect(page).toHaveURL("https://www.saucedemo.com/cart.html")
-    await expect(cartPage.cartItem(firstproduct)).toBeVisible();
-    await expect(cartPage.cartItem(secondProduct)).toBeVisible();
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-})
-
-
-test('Checkout Overview shows the selected product before order completion.', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-
-
-    await loginPage.Visit();
-
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await expect(inventoryPage.cartBadge).toHaveText('1');
-
-    await inventoryPage.openCart();
-
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53306');
-    await checkout.clickOncheckoutContinue()
-    await checkout.checkoutSummary(firstproduct);
-
-    const total = await checkout.checkoutTotal.innerText();
-    console.log(`Checkout total: ${total}`);
-
-    await expect(checkout.checkoutTotal).toBeVisible();
-
-
-})
-
-
-test('verify checkout price totals for two products', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
-
-    await loginPage.Visit();
-
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-    await inventoryPage.addProductToCart(secondProduct);
-
-
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await inventoryPage.verifyProductWasAdded(secondProduct);
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-    await inventoryPage.openCart();
-
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53306');
-    await checkout.clickOncheckoutContinue()
-    await expect(checkout.checkoutSummary(firstproduct)).toBeVisible();
-    await expect(checkout.checkoutSummary(secondProduct)).toBeVisible();
-    await expect(checkout.checkoutSummary(firstproduct)).toContainText('$29.99');
-    await expect(checkout.checkoutSummary(secondProduct)).toContainText('$9.99');
-    await expect(checkout.subTotal).toHaveText('Item total: $39.98');
-    await expect(checkout.tax).toHaveText('Tax: $3.20');
-    await expect(checkout.checkoutTotal).toHaveText('Total: $43.18');
-
-})
-
-
-
-test('Back Home after successful order', async ({ page ,loginPage, inventoryPage,cartPage,checkout}) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
-
-    await loginPage.Visit();
-
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-    await inventoryPage.addProductToCart(secondProduct);
-
-
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await inventoryPage.verifyProductWasAdded(secondProduct);
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-    await inventoryPage.openCart();
-
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53307');
-    await checkout.clickOncheckoutContinue();
-    await checkout.clickoncheckoutfinish()
-
-    await expect(checkout.orderCompltedMsg).toContainText('Thank you for your order!');
-
-    await expect(inventoryPage.cartBadge).toBeHidden();
-    await checkout.ReturnToHome();
-    await expect(inventoryPage.pagetitile).toBeVisible();
-    await expect(page).toHaveURL(/inventory.html/);
-})
-
-
-test('Checkout Overview shows payment and shipping information.', async ({ loginPage, inventoryPage,cartPage,checkout}) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-
-
-    await loginPage.Visit();
-
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await expect(inventoryPage.cartBadge).toHaveText('1');
-
-    await inventoryPage.openCart();
-
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53306');
-    await checkout.clickOncheckoutContinue()
-    await checkout.checkoutSummary(firstproduct);
-    await expect(checkout.paymentInfo).toBeVisible();
-
-})
-
-
-test('Checkout item total equals sum of selected product prices', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
-
-    await loginPage.Visit();
-
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-    await inventoryPage.addProductToCart(secondProduct);
-
-    await inventoryPage.openCart();
-
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-     await cartPage.clickOnCheckOut();
-
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53307');
-
-    await checkout.clickOncheckoutContinue();
-   
-const priceTexts =
-  await checkout.inventoryCheckoutProductPrice.allTextContents();
-
-const numericPrices = priceTexts.map(price =>
-  parseFloat(price.replace(/[^0-9.]/g, ''))
-);
-
-const calculatedTotal = numericPrices.reduce(
-  (sum, price) => sum + price,
-  0
-);
-
-console.log("calculatedTotal:",calculatedTotal)
-
-const subtotalText = await checkout.subTotal.innerText();
-
-const displayedItemTotal = parseFloat(
-  subtotalText.replace(/[^0-9.]/g, '')
-);
-
-console.log("displayedItemTotal:",calculatedTotal)
-expect(calculatedTotal).toBeCloseTo(displayedItemTotal, 2);
-
-})
-
-
-test('Checkout keeps valid customer details after Postal Code validation error', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
-
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
-    await loginPage.Visit();
-    await loginPage.login('standard_user', 'secret_sauce');
-    await expect(inventoryPage.pagetitile).toBeVisible();
-    await inventoryPage.addProductToCart(firstproduct);
-    await inventoryPage.addProductToCart(secondProduct);
-    await inventoryPage.verifyProductWasAdded(firstproduct);
-    await inventoryPage.verifyProductWasAdded(secondProduct);
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-    await inventoryPage.openCart();
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '');
-    await expect(checkout.firstName).toHaveValue('test');
-    await expect(checkout.lastName).toHaveValue('test');
-    await expect(checkout.postalCode).toHaveValue('');
-    await checkout.clickOncheckoutContinue();
-    await expect(checkout.errorMsg).toContainText('Error: Postal Code is required');
-
-});
-
-
-
-test('Checkout Overview displays every selected product and correct subtotal',
-  async ({ page, loginPage, inventoryPage ,cartPage,checkout}) => {
-    await loginPage.Visit();
-    await loginPage.login('standard_user', 'secret_sauce');
-    await expect(inventoryPage.pagetitile).toBeVisible();
-    const productNames = await inventoryPage.productNames.allTextContents();
-    for(const productName of productNames )
-    {
-       await inventoryPage.addProductToCart(productName);
-      
-    }
-
-    await inventoryPage.openCart();
-        for(const productName of productNames )
-    {
-       await expect(cartPage.cartItem(productName)).toBeVisible();
-      
-    }
-
-    await cartPage.clickOnCheckOut();
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53307');
-    const chyeckoutInventoryProductNames = await checkout.checkoutInventoryItemName.allTextContents();
-
-    for(const chyeckoutInventoryProductName of chyeckoutInventoryProductNames )
-    {
-       await expect(cartPage.cartItem(chyeckoutInventoryProductName)).toBeVisible();
-      
-    }
-    await checkout.clickOncheckoutContinue()
-    const priceTexts =
-    await checkout.inventoryCheckoutProductPrice.allTextContents();
-
-   const numericPrices = priceTexts.map(price =>
-    parseFloat(price.replace(/[^0-9.]/g, ''))
-);
-
-const calculatedTotal = numericPrices.reduce(
-  (sum, price) => sum + price,
-  0
-);
-
-
-const subtotalText = await checkout.subTotal.innerText();
-
-const displayedItemTotal = parseFloat(
-  subtotalText.replace(/[^0-9.]/g, '')
-);
-
-expect(calculatedTotal).toBeCloseTo(displayedItemTotal, 2);
-
-
   });
 
+  const addProducts = async (
+    inventoryPage: any,
+    products: string[],
+  ): Promise<void> => {
+    for (const product of products) {
+      await inventoryPage.addProductToCart(product);
 
-  test('Checkout total equals Item Total plus Tax', async ({ loginPage, inventoryPage,cartPage,checkout }) => {
+      await inventoryPage.verifyProductWasAdded(product);
+    }
+  };
 
-    const firstproduct = 'Sauce Labs Backpack';
-    const secondProduct = 'Sauce Labs Bike Light';
+  test("TC_CHECKOUT_001 - Customer should complete an order successfully @positive @checkout @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_001;
 
-    await loginPage.Visit();
+    await addProducts(inventoryPage, data.products);
 
-    await loginPage.login('standard_user', 'secret_sauce');
-
-    await expect(inventoryPage.pagetitile).toBeVisible();
-
-    await inventoryPage.addProductToCart(firstproduct);
-
-    await inventoryPage.addProductToCart(secondProduct);
+    await expect(inventoryPage.cartBadge).toHaveText(data.expectedCartCount);
 
     await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
 
-    await expect(inventoryPage.cartBadge).toHaveText('2');
-
-     await cartPage.clickOnCheckOut();
-
-    await checkout.checkoutCustomerDetailsFilling('test', 'test', '53307');
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
 
     await checkout.clickOncheckoutContinue();
 
-   
-const subTotal = parseFloat((await checkout.subTotal.textContent())!.replace(/[^0-9.]/g, ''));
-const tax = parseFloat((await checkout.tax.textContent())!.replace(/[^0-9.]/g, ''));
+    await checkout.clickoncheckoutfinish();
 
-const expectedTotal = subTotal + tax;
+    await expect(checkout.orderCompltedMsg).toContainText(data.successMessage);
+  });
 
+  test("TC_CHECKOUT_002 - First Name should be required during checkout @negative @validation @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_002;
 
-const totalText = await checkout.checkoutTotal.innerText();
+    await addProducts(inventoryPage, data.products);
 
-const displayedItemTotal = parseFloat(
-  totalText.replace(/[^0-9.]/g, '')
-);
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
 
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
 
-expect(expectedTotal).toBeCloseTo(displayedItemTotal, 2);
+    await checkout.clickOncheckoutContinue();
 
-})
+    await expect(checkout.errorMsg).toContainText(data.expectedError);
+  });
+
+  test("TC_CHECKOUT_003 - Last Name should be required during checkout @negative @validation @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_003;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    await expect(checkout.errorMsg).toContainText(data.expectedError);
+  });
+
+  test("TC_CHECKOUT_004 - Postal Code should be required during checkout @negative @validation @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_004;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    await expect(checkout.errorMsg).toContainText(data.expectedError);
+  });
+
+  test("TC_CHECKOUT_005 - Customer should cancel checkout and return to Cart @negative @cancel @regression", async ({
+    page,
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_005;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.clickOnCheckoutCancel();
+
+    await expect(page).toHaveURL(new RegExp(data.cartUrl));
+
+    for (const product of data.products) {
+      await expect(cartPage.cartItem(product)).toBeVisible();
+    }
+
+    await expect(inventoryPage.cartBadge).toHaveText(data.expectedCartCount);
+  });
+
+  test("TC_CHECKOUT_006 - Checkout Overview should display the selected product @positive @overview @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_006;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    await expect(checkout.checkoutSummary(data.products[0])).toBeVisible();
+
+    await expect(checkout.checkoutTotal).toBeVisible();
+  });
+
+  test("TC_CHECKOUT_007 - Checkout should display correct totals for two products @positive @price @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_007;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    for (const product of data.products) {
+      await expect(checkout.checkoutSummary(product)).toContainText(
+        data.prices[product as keyof typeof data.prices],
+      );
+    }
+
+    await expect(checkout.subTotal).toHaveText(data.subtotal);
+
+    await expect(checkout.tax).toHaveText(data.tax);
+
+    await expect(checkout.checkoutTotal).toHaveText(data.total);
+  });
+
+  test("TC_CHECKOUT_008 - Customer should return home after successful order @positive @navigation @regression", async ({
+    page,
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_008;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    await checkout.clickoncheckoutfinish();
+
+    await expect(checkout.orderCompltedMsg).toContainText(data.successMessage);
+
+    await expect(inventoryPage.cartBadge).toBeHidden();
+
+    await checkout.ReturnToHome();
+
+    await expect(page).toHaveURL(new RegExp(data.inventoryUrl));
+
+    await expect(inventoryPage.pagetitile).toBeVisible();
+  });
+
+  test("TC_CHECKOUT_009 - Checkout Overview should display payment and shipping information @positive @overview @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_009;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    await expect(checkout.paymentInfo).toBeVisible();
+  });
+
+  test("TC_CHECKOUT_010 - Item total should equal the sum of selected product prices @positive @calculation @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_010;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    const priceTexts =
+      await checkout.inventoryCheckoutProductPrice.allTextContents();
+
+    const calculatedTotal = priceTexts
+      .map((price: string) => Number(price.replace(/[^0-9.]/g, "")))
+      .reduce((total: number, price: number) => total + price, 0);
+
+    const subtotalText = await checkout.subTotal.innerText();
+
+    const displayedTotal = Number(subtotalText.replace(/[^0-9.]/g, ""));
+
+    expect(calculatedTotal).toBeCloseTo(displayedTotal, 2);
+  });
+
+  test("TC_CHECKOUT_011 - Checkout should retain valid fields after Postal Code error @negative @validation @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_011;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    await expect(checkout.firstName).toHaveValue(data.firstName);
+
+    await expect(checkout.lastName).toHaveValue(data.lastName);
+
+    await expect(checkout.postalCode).toHaveValue("");
+
+    await expect(checkout.errorMsg).toContainText(
+      "Error: Postal Code is required",
+    );
+  });
+
+  test("TC_CHECKOUT_012 - Overview should display every product and correct subtotal @positive @calculation @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_012;
+
+    const productNames = await inventoryPage.productNames.allTextContents();
+
+    expect(productNames.length).toBeGreaterThan(0);
+
+    await addProducts(inventoryPage, productNames);
+
+    await inventoryPage.openCart();
+
+    for (const product of productNames) {
+      await expect(cartPage.cartItem(product)).toBeVisible();
+    }
+
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    for (const product of productNames) {
+      await expect(checkout.checkoutSummary(product)).toBeVisible();
+    }
+
+    const priceTexts =
+      await checkout.inventoryCheckoutProductPrice.allTextContents();
+
+    const calculatedTotal = priceTexts
+      .map((price: string) => Number(price.replace(/[^0-9.]/g, "")))
+      .reduce((total: number, price: number) => total + price, 0);
+
+    const subtotalText = await checkout.subTotal.innerText();
+
+    const displayedTotal = Number(subtotalText.replace(/[^0-9.]/g, ""));
+
+    expect(calculatedTotal).toBeCloseTo(displayedTotal, 2);
+  });
+
+  test("TC_CHECKOUT_013 - Total should equal Item Total plus Tax @positive @calculation @regression", async ({
+    inventoryPage,
+    cartPage,
+    checkout,
+  }) => {
+    const data = checkoutData.TC_CHECKOUT_013;
+
+    await addProducts(inventoryPage, data.products);
+
+    await inventoryPage.openCart();
+    await cartPage.clickOnCheckOut();
+
+    await checkout.checkoutCustomerDetailsFilling(
+      data.firstName,
+      data.lastName,
+      data.postalCode,
+    );
+
+    await checkout.clickOncheckoutContinue();
+
+    const subtotal = Number(
+      (await checkout.subTotal.innerText()).replace(/[^0-9.]/g, ""),
+    );
+
+    const tax = Number(
+      (await checkout.tax.innerText()).replace(/[^0-9.]/g, ""),
+    );
+
+    const displayedTotal = Number(
+      (await checkout.checkoutTotal.innerText()).replace(/[^0-9.]/g, ""),
+    );
+
+    expect(subtotal + tax).toBeCloseTo(displayedTotal, 2);
+  });
+});
